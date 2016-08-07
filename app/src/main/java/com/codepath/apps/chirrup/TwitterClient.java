@@ -38,6 +38,7 @@ public class TwitterClient extends OAuthBaseClient {
 		//specify the params
 		RequestParams params = new RequestParams();
 		if(sinceOrMaxId.equals("since_id")) {
+
             params.put("since_id", id);
             params.put("count", 25);
 

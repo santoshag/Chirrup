@@ -8,16 +8,19 @@ import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.TextView;
 
+import com.bumptech.glide.Glide;
 import com.codepath.apps.chirrup.R;
+import com.codepath.apps.chirrup.decorators.LinkifiedTextView;
 import com.codepath.apps.chirrup.models.Tweet;
-import com.squareup.picasso.Picasso;
 
 import java.util.List;
+
+import jp.wasabeef.glide.transformations.RoundedCornersTransformation;
 
 /**
  * Created by santoshag on 8/5/16.
  */
-public class TweetsAdapter extends RecyclerView.Adapter<TweetsAdapter.ViewHolder> {
+public class TweetsAdapter extends RecyclerView.Adapter<TweetsAdapter.ViewHolder>{
 
     // Store a member variable for the contacts
     private List<Tweet> mTweets;
@@ -45,6 +48,8 @@ public class TweetsAdapter extends RecyclerView.Adapter<TweetsAdapter.ViewHolder
 
         //return the viewholder instance
         ViewHolder viewHolder = new ViewHolder(tweetView);
+
+
         return viewHolder;
 
     }
@@ -55,15 +60,18 @@ public class TweetsAdapter extends RecyclerView.Adapter<TweetsAdapter.ViewHolder
         Tweet tweet = mTweets.get(position);
 
         TextView tvUserName = viewHolder.tvUserName;
-        TextView tvBody = viewHolder.tvBody;
+        TextView tvScreenName = viewHolder.tvScreenName;
+        LinkifiedTextView tvBody = viewHolder.tvBody;
         TextView tvRelativeTime = viewHolder.tvRelativeTime;
         ImageView ivProfileImg = viewHolder.ivProfileImg;
 
-        tvUserName.setText(tweet.getUser().getScreenName());
+        tvUserName.setText(tweet.getUser().getName());
+        tvScreenName.setText(tweet.getUser().getScreenName());
         tvBody.setText(tweet.getBody());
+//        TextViewUtils.stripUnderlines(tvBody);
         tvRelativeTime.setText(tweet.getRelativeDate());
         ivProfileImg.setImageResource(android.R.color.transparent);
-        Picasso.with(getContext()).load(tweet.getUser().getProfileImageUrl()).into(ivProfileImg);
+        Glide.with(getContext()).load(tweet.getUser().getProfileImageUrl()).bitmapTransform(new RoundedCornersTransformation(mContext, 15, 0)).into(ivProfileImg);
     }
 
     @Override
@@ -71,13 +79,13 @@ public class TweetsAdapter extends RecyclerView.Adapter<TweetsAdapter.ViewHolder
         return mTweets.size();
     }
 
-
     // Provide a direct reference to each of the views within a data item
     // Used to cache the views within the item layout for fast access
     public static class ViewHolder extends RecyclerView.ViewHolder {
         // Your holder should contain a member variable
         // for any view that will be set as you render a row
-        public TextView tvUserName, tvBody, tvRelativeTime;
+        public TextView tvUserName, tvRelativeTime, tvScreenName;
+        public LinkifiedTextView tvBody;
         public ImageView ivProfileImg;
 
         // We also create a constructor that accepts the entire item row
@@ -88,12 +96,15 @@ public class TweetsAdapter extends RecyclerView.Adapter<TweetsAdapter.ViewHolder
             super(itemView);
 
             tvUserName = (TextView) itemView.findViewById(R.id.tvUserName);
-            tvBody = (TextView) itemView.findViewById(R.id.tvBody);
+            tvScreenName = (TextView) itemView.findViewById(R.id.tvScreenName);
+
+            tvBody = (LinkifiedTextView) itemView.findViewById(R.id.tvBody);
+
             tvRelativeTime = (TextView) itemView.findViewById(R.id.tvRelativeTime);
             ivProfileImg = (ImageView) itemView.findViewById(R.id.ivProfileImg);
-
         }
     }
+
 
 }
 

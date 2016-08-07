@@ -8,7 +8,7 @@
     <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE" />
 
     <application
-        android:name="com.codepath.apps.chirrup.TwitterApplication"
+        android:name=".TwitterApplication"
         android:allowBackup="true"
         android:icon="@drawable/twitter_icon"
         android:label="@string/app_name"
@@ -21,7 +21,7 @@
             android:value="1" />
 
         <activity
-            android:name="com.codepath.apps.chirrup.activities.LoginActivity"
+            android:name=".activities.LoginActivity"
             android:label="@string/app_name"
             android:theme="@style/AppTheme">
             <intent-filter>
@@ -40,8 +40,9 @@
                     android:scheme="oauth" />
             </intent-filter>
         </activity>
-        <activity android:name="com.codepath.apps.chirrup.activities.TimelineActivity" />
-        <activity android:name="com.codepath.apps.chirrup.activities.NewTweetActivity"></activity>
+        <activity android:name=".activities.TimelineActivity" />
+        <activity android:name=".activities.NewTweetActivity" />
+        <activity android:name=".activities.DetailActivity"></activity>
     </application>
 
 </manifest>

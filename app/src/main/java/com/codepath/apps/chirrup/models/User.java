@@ -33,12 +33,16 @@ public class User {
         try {
             user.id = jsonObject.getLong("id");
             user.name = jsonObject.getString("name");
-            user.screenName = jsonObject.getString("screen_name");
-            user.profileImageUrl = jsonObject.getString("profile_image_url");
+            user.screenName = "@" + jsonObject.getString("screen_name");
+            user.profileImageUrl = getOriginalImage(jsonObject.getString("profile_image_url"));
         } catch (JSONException e) {
             e.printStackTrace();
         }
 
         return user;
+    }
+
+    public static String getOriginalImage(String imageUrl){
+        return imageUrl.replace("_normal", "");
     }
 }

@@ -5,8 +5,8 @@
     android:padding="10dp">
 
     <ImageView
-        android:layout_width="50dp"
-        android:layout_height="50dp"
+        android:layout_width="48dp"
+        android:layout_height="48dp"
         android:id="@+id/ivProfileImg"
         android:layout_alignParentTop="true"
         android:layout_alignParentLeft="true"
@@ -19,15 +19,22 @@
         android:layout_height="wrap_content"
         tools:text="MyName"
         android:id="@+id/tvUserName"
+        fontPath="fonts/roboto_medium.ttf"
+        android:textColor="#000000"
         android:layout_alignParentTop="true"
         android:layout_toRightOf="@+id/ivProfileImg"
         android:layout_toEndOf="@+id/ivProfileImg" />
 
-    <TextView
+    <com.codepath.apps.chirrup.decorators.LinkifiedTextView
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         tools:text="My Tweet"
         android:id="@+id/tvBody"
+        fontPath="fonts/roboto_light.ttf"
+        android:autoLink="all"
+        android:textColor="#000000"
+        android:textColorLink="@color/colorPrimary"
+        android:linksClickable="true"
         android:layout_toRightOf="@+id/ivProfileImg"
         android:layout_toEndOf="@+id/ivProfileImg"
         android:layout_below="@id/tvUserName"/>
@@ -40,4 +47,16 @@
         android:layout_alignParentTop="true"
         android:layout_alignParentRight="true"
         android:layout_alignParentEnd="true" />
+
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="screenname"
+        android:id="@+id/tvScreenName"
+        fontPath="fonts/roboto_light.ttf"
+        android:textColor="#AAB8C2"
+        android:layout_alignTop="@+id/tvUserName"
+        android:layout_toRightOf="@+id/tvUserName"
+        android:layout_toEndOf="@+id/tvUserName"
+        android:paddingLeft="5dp"/>
 </RelativeLayout>

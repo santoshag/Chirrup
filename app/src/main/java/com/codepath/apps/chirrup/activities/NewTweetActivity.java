@@ -22,7 +22,8 @@ import cz.msebera.android.httpclient.Header;
 public class NewTweetActivity extends AppCompatActivity {
     TwitterClient client;
     EditText etTweetText;
-    TextView tvCharCount;
+//    TextView tvCharCount;
+    public static int TWEET_CHAR_LIMIT = 140;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -31,7 +32,6 @@ public class NewTweetActivity extends AppCompatActivity {
         //get singleton rest client
         client = TwitterApplication.getRestClient();
         etTweetText = (EditText) findViewById(R.id.etTweetText);
-        tvCharCount = (TextView) findViewById(R.id.tvCharCount);
         etTweetText.addTextChangedListener(new TextWatcher() {
             @Override
             public void beforeTextChanged(CharSequence s, int start, int count, int after) {
@@ -41,7 +41,9 @@ public class NewTweetActivity extends AppCompatActivity {
             @Override
             public void onTextChanged(CharSequence s, int start, int before, int count) {
                 //This sets a textview to the current length
-                tvCharCount.setText(String.valueOf(s.length()));
+                TextView tvCharCount = (TextView) findViewById(R.id.tvCharCount);
+
+                tvCharCount.setText(String.valueOf(TWEET_CHAR_LIMIT - s.length()));
             }
 
             @Override
