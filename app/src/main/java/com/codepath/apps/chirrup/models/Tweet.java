@@ -2,6 +2,10 @@ package com.codepath.apps.chirrup.models;
 
 import android.text.format.DateUtils;
 
+import com.activeandroid.Model;
+import com.activeandroid.annotation.Column;
+import com.activeandroid.annotation.Table;
+
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -14,13 +18,27 @@ import java.util.Locale;
 /**
  * Created by santoshag on 8/5/16.
  */
-public class Tweet {
 
-    private long id;
+@Table(name = "Tweets")
+public class Tweet extends Model{
+
+    @Column(name = "remote_id", unique = true)
+    private long remoteId;
+    @Column(name = "body")
     private String body;
+    @Column(name = "user")//, onUpdate = Column.ForeignKeyAction.CASCADE, onDelete = Column.ForeignKeyAction.CASCADE)
     private User user;
+    @Column(name = "created_at")
     private String createdAt;
+    @Column(name = "relative_date")
     private String relativeDate;
+
+
+    // Make sure to have a default constructor for every ActiveAndroid model
+    public Tweet(){
+        super();
+    }
+
 
     public String getRelativeDate() {
         return relativeDate;
@@ -32,8 +50,8 @@ public class Tweet {
     //for getting tweets in batches for endless scrolling
     public static Long lastTweetId;
 
-    public long getId() {
-        return id;
+    public long getRemoteId() {
+        return remoteId;
     }
 
     public String getBody() {
@@ -48,23 +66,27 @@ public class Tweet {
         Tweet tweet = new Tweet();
         try {
             tweet.body = jsonObject.getString("text");
-            tweet.id = jsonObject.getLong("id");
-            tweet.user = User.fromJson(jsonObject.getJSONObject("user"));
+            tweet.remoteId = jsonObject.getLong("id");
+            User user = User.findOrCreateFromJson(jsonObject.getJSONObject("user"));
+            tweet.user = user;
+            user.save();
             tweet.relativeDate = getRelativeTimeAgo(jsonObject.getString("created_at"));
+            tweet.save();
+
         } catch (JSONException e) {
             e.printStackTrace();
         }
-
         return tweet;
     }
 
     public static ArrayList<Tweet> fromJsonArray(JSONArray jsonArray){
+
         ArrayList<Tweet> result = new ArrayList<>();
         for(int i=0; i< jsonArray.length(); i++){
             try {
                 Tweet tweet = fromJson(jsonArray.getJSONObject(i));
                 result.add(tweet);
-                lastTweetId = tweet.getId()-1;
+                lastTweetId = tweet.getRemoteId() - 1;
             } catch (JSONException e) {
                 e.printStackTrace();
             }

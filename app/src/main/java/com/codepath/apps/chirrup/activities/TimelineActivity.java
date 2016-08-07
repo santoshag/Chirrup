@@ -10,20 +10,26 @@ import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.util.Log;
 import android.view.View;
+import android.widget.Toast;
 
+import com.activeandroid.query.Delete;
+import com.activeandroid.query.Select;
 import com.codepath.apps.chirrup.R;
 import com.codepath.apps.chirrup.TwitterApplication;
 import com.codepath.apps.chirrup.TwitterClient;
 import com.codepath.apps.chirrup.adapters.TweetsAdapter;
 import com.codepath.apps.chirrup.decorators.ItemClickSupport;
 import com.codepath.apps.chirrup.models.Tweet;
+import com.codepath.apps.chirrup.models.User;
 import com.codepath.apps.chirrup.utils.EndlessRecyclerViewScrollListener;
+import com.codepath.apps.chirrup.utils.Utils;
 import com.loopj.android.http.JsonHttpResponseHandler;
 
 import org.json.JSONArray;
 import org.json.JSONObject;
 
 import java.util.ArrayList;
+import java.util.List;
 
 import cz.msebera.android.httpclient.Header;
 import uk.co.chrisjenx.calligraphy.CalligraphyContextWrapper;
@@ -42,6 +48,8 @@ public class TimelineActivity extends AppCompatActivity {
         setContentView(R.layout.activity_timeline);
         //get singleton rest client
         client = TwitterApplication.getRestClient();
+// Lookup the swipe container view
+        swipeContainer = (SwipeRefreshLayout) findViewById(R.id.swipeContainer);
 
         myFab = (FloatingActionButton) findViewById(R.id.fabCompose);
         rvTweets = (RecyclerView) findViewById(R.id.rvTweets);
@@ -78,12 +86,32 @@ public class TimelineActivity extends AppCompatActivity {
                 }
             }
         });
-
-        populateTimeline("since_id", (long)1);
-        //setup swipe to refresh
-        setupSwipeToRefreshView();
     }
 
+
+    @Override
+    public void onResume() {
+        super.onResume();
+        if(!Utils.checkForInternet()){
+            Toast.makeText(this, "Internet is not connected", Toast.LENGTH_SHORT).show();
+// Query ActiveAndroid for list of todo items currenty sorted by priority
+
+            swipeContainer.setEnabled(false);
+            List<Tweet> queryResults = new Select().from(Tweet.class)
+                    .orderBy("remote_id DESC").execute();
+            // Load the result into the adapter using `addAll`
+            Log.i("sql", "loading data from offline: " + queryResults.size() + " " + queryResults.get(1).getUser().getProfileImageUrl());
+            tweetList.clear();
+            tweetList.addAll(queryResults);
+            tweetsAdapter.notifyDataSetChanged();
+
+        }else{
+            //get timeline here
+            populateTimeline("since_id", (long)1);
+            //setup swipe to refresh
+            setupSwipeToRefreshView();
+        }
+    }
     // pass context to Calligraphy
     @Override
     protected void attachBaseContext(Context context) {
@@ -91,8 +119,6 @@ public class TimelineActivity extends AppCompatActivity {
     }
 
     private void setupSwipeToRefreshView() {
-        // Lookup the swipe container view
-        swipeContainer = (SwipeRefreshLayout) findViewById(R.id.swipeContainer);
         // Setup refresh listener which triggers new data loading
         swipeContainer.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
             @Override
@@ -131,8 +157,11 @@ public class TimelineActivity extends AppCompatActivity {
             @Override
             public void onSuccess(int statusCode, Header[] headers, JSONArray response) {
                 Log.d("DEBUG", response.toString());
+                Boolean clearOfflineTweets = Boolean.FALSE;
                 if(sinceOrMaxId.equals("since_id")){
                     tweetList.clear();
+                    new Delete().from(Tweet.class).execute(); // all records
+                    new Delete().from(User.class).execute(); // all records
                 }
                 tweetList.addAll(Tweet.fromJsonArray(response));
                 tweetsAdapter.notifyDataSetChanged();
