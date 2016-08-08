@@ -13,6 +13,7 @@ import org.json.JSONObject;
  */
 @Table(name = "Users")
 public class User extends Model{
+
     @Column(name = "remote_id", unique = true)
     private Long remoteId;
     @Column(name = "screen_name")
@@ -44,7 +45,7 @@ public class User extends Model{
         return remoteId;
     }
 
-    public static User findOrCreateFromJson(JSONObject json) {
+    public static User findOrCreateFromJSON(JSONObject json) {
         long rId = 0; // get just the remote id
         try {
             rId = json.getLong("id");

@@ -21,7 +21,6 @@ public class TwitterApplication extends com.activeandroid.app.Application {
 		super.onCreate();
 		TwitterApplication.context = this;
 		CalligraphyConfig.initDefault(new CalligraphyConfig.Builder()
-				.setDefaultFontPath("fonts/helvetica_neue_roman.ttf")
 				.setFontAttrId(R.attr.fontPath)
 				.build()
 		);

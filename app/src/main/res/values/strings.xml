@@ -3,5 +3,6 @@
 
     <string name="app_name">Chirrup</string>
     <string name="login_label">Connect to Twitter</string>
+    <string name="tweet">Tweet</string>
 
 </resources>

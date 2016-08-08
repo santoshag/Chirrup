@@ -64,14 +64,38 @@ public class TweetsAdapter extends RecyclerView.Adapter<TweetsAdapter.ViewHolder
         LinkifiedTextView tvBody = viewHolder.tvBody;
         TextView tvRelativeTime = viewHolder.tvRelativeTime;
         ImageView ivProfileImg = viewHolder.ivProfileImg;
+        ImageView ivPhoto = viewHolder.ivPhoto;
+        ImageView ivRetweet = viewHolder.ivRetweet;
+        ImageView ivLike = viewHolder.ivLike;
+
+
+        TextView tvRetweetCount = viewHolder.tvRetweetCount;
+        TextView tvLikeCount = viewHolder.tvLikeCount;
 
         tvUserName.setText(tweet.getUser().getName());
         tvScreenName.setText(tweet.getUser().getScreenName());
         tvBody.setText(tweet.getBody());
+        tvRetweetCount.setText("");
+        tvLikeCount.setText("");
+
+        if(tweet.getRetweetCount() > 0) {
+            ivRetweet.setImageResource(0);
+            tvRetweetCount.setText(String.valueOf(tweet.getRetweetCount()));
+            ivRetweet.setImageDrawable(getContext().getResources().getDrawable(R.drawable.retweet_on));
+        }
+        if(tweet.getFavouritesCount() > 0) {
+            ivLike.setImageResource(0);
+            tvLikeCount.setText(String.valueOf(tweet.getFavouritesCount()));
+            ivLike.setImageDrawable(getContext().getResources().getDrawable(R.drawable.like_on));
+
+        }
 //        TextViewUtils.stripUnderlines(tvBody);
         tvRelativeTime.setText(tweet.getRelativeDate());
         ivProfileImg.setImageResource(android.R.color.transparent);
+        ivPhoto.setImageResource(android.R.color.transparent);
+
         Glide.with(getContext()).load(tweet.getUser().getProfileImageUrl()).bitmapTransform(new RoundedCornersTransformation(mContext, 15, 0)).into(ivProfileImg);
+        Glide.with(getContext()).load(tweet.getEntity().getMediaUrl()).bitmapTransform(new RoundedCornersTransformation(mContext, 15, 0)).into(ivPhoto);
     }
 
     @Override
@@ -84,9 +108,9 @@ public class TweetsAdapter extends RecyclerView.Adapter<TweetsAdapter.ViewHolder
     public static class ViewHolder extends RecyclerView.ViewHolder {
         // Your holder should contain a member variable
         // for any view that will be set as you render a row
-        public TextView tvUserName, tvRelativeTime, tvScreenName;
+        public TextView tvUserName, tvRelativeTime, tvScreenName, tvLikeCount, tvRetweetCount;
         public LinkifiedTextView tvBody;
-        public ImageView ivProfileImg;
+        public ImageView ivProfileImg, ivPhoto, ivLike, ivRetweet;
 
         // We also create a constructor that accepts the entire item row
         // and does the view lookups to find each subview
@@ -97,11 +121,18 @@ public class TweetsAdapter extends RecyclerView.Adapter<TweetsAdapter.ViewHolder
 
             tvUserName = (TextView) itemView.findViewById(R.id.tvUserName);
             tvScreenName = (TextView) itemView.findViewById(R.id.tvScreenName);
+            tvLikeCount = (TextView) itemView.findViewById(R.id.tvLikeCount);
+            tvRetweetCount = (TextView) itemView.findViewById(R.id.tvRetweetCount);
 
             tvBody = (LinkifiedTextView) itemView.findViewById(R.id.tvBody);
 
             tvRelativeTime = (TextView) itemView.findViewById(R.id.tvRelativeTime);
             ivProfileImg = (ImageView) itemView.findViewById(R.id.ivProfileImg);
+            ivPhoto = (ImageView) itemView.findViewById(R.id.ivPhoto);
+            ivRetweet = (ImageView) itemView.findViewById(R.id.ivRetweet);
+
+            ivLike = (ImageView) itemView.findViewById(R.id.ivLike);
+
         }
     }
 

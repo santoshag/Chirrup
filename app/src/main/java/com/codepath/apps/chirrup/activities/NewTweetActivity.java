@@ -1,6 +1,5 @@
 package com.codepath.apps.chirrup.activities;
 
-import android.content.Intent;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
 import android.text.Editable;
@@ -28,7 +27,7 @@ public class NewTweetActivity extends AppCompatActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_new_tweet);
+        setContentView(R.layout.fragment_new_tweet);
         //get singleton rest client
         client = TwitterApplication.getRestClient();
         etTweetText = (EditText) findViewById(R.id.etTweetText);
@@ -58,9 +57,9 @@ public class NewTweetActivity extends AppCompatActivity {
             @Override
             public void onSuccess(int statusCode, Header[] headers, JSONObject response) {
                 Log.d("DEBUG", "onsuccess" + response.toString());
-                Intent i = new Intent(getApplicationContext(), TimelineActivity.class);
+             /*   Intent i = new Intent(getApplicationContext(), TimelineActivity.class);
                 i.putExtra("newTweet", Boolean.TRUE);
-                startActivity(i);
+                startActivity(i);*/
             }
 
             @Override

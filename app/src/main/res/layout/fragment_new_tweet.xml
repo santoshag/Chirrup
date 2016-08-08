@@ -8,25 +8,47 @@
     android:paddingLeft="@dimen/activity_horizontal_margin"
     android:paddingRight="@dimen/activity_horizontal_margin"
     android:paddingTop="@dimen/activity_vertical_margin"
+    android:background="#FFFFFF"
     tools:context="com.codepath.apps.chirrup.activities.NewTweetActivity">
 
     <EditText
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:id="@+id/etTweetText"/>
+        android:id="@+id/etTweetText"
+        android:lines="5"
+        android:hint=" What's happening?"
+        fontPath="fonts/roboto_light.ttf"
+        android:background="@android:color/transparent"
+        android:textCursorDrawable="@drawable/cursor_drawable"/>
 
 
     <Button
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:onClick="postTweet"
+        android:layout_alignParentRight="true"
+        android:text="@string/tweet"
+        android:textColor="#FFFFFF"
+        android:enabled="false"
+        android:textSize="18sp"
+        fontPath="fonts/roboto_medium.ttf"
+        android:textAllCaps="false"
+        android:background="@drawable/button_off"
         android:id="@+id/btnPost"
-        android:layout_below="@+id/etTweetText"/>
+        android:layout_below="@+id/etTweetText"
+        />
 
     <TextView
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_below="@+id/btnPost"
+        android:layout_below="@+id/etTweetText"
         android:text="140"
+        android:textSize="18dp"
+
+        android:padding="10dp"
+        android:layout_alignBaseline="@id/btnPost"
+        android:layout_alignBottom="@+id/btnPost"
+        fontPath="fonts/roboto_light.ttf"
+        android:layout_toLeftOf="@+id/btnPost"
         android:id="@+id/tvCharCount"/>
 </RelativeLayout>

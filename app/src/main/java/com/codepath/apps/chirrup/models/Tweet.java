@@ -1,10 +1,9 @@
 package com.codepath.apps.chirrup.models;
 
-import android.text.format.DateUtils;
-
 import com.activeandroid.Model;
 import com.activeandroid.annotation.Column;
 import com.activeandroid.annotation.Table;
+import com.codepath.apps.chirrup.utils.Utils;
 
 import org.json.JSONArray;
 import org.json.JSONException;
@@ -22,17 +21,30 @@ import java.util.Locale;
 @Table(name = "Tweets")
 public class Tweet extends Model{
 
-    @Column(name = "remote_id", unique = true)
+    @Column(name = "remote_id")
     private long remoteId;
     @Column(name = "body")
     private String body;
     @Column(name = "user")//, onUpdate = Column.ForeignKeyAction.CASCADE, onDelete = Column.ForeignKeyAction.CASCADE)
     private User user;
+    @Column(name = "entities")//, onUpdate = Column.ForeignKeyAction.CASCADE, onDelete = Column.ForeignKeyAction.CASCADE)
+    private Entity entity;
     @Column(name = "created_at")
     private String createdAt;
     @Column(name = "relative_date")
     private String relativeDate;
+    @Column(name = "retweet_count")
+    private int retweetCount = 0;
+    @Column(name = "favourites_count")
+    private int favouritesCount = 0;
 
+    public int getFavouritesCount() {
+        return favouritesCount;
+    }
+
+    public int getRetweetCount() {
+        return retweetCount;
+    }
 
     // Make sure to have a default constructor for every ActiveAndroid model
     public Tweet(){
@@ -67,9 +79,18 @@ public class Tweet extends Model{
         try {
             tweet.body = jsonObject.getString("text");
             tweet.remoteId = jsonObject.getLong("id");
-            User user = User.findOrCreateFromJson(jsonObject.getJSONObject("user"));
+            if(jsonObject.has("retweet_count")) {
+                tweet.retweetCount = Integer.parseInt(jsonObject.getString("retweet_count"));
+            }
+            if(jsonObject.has("favorite_count")) {
+                tweet.favouritesCount = Integer.parseInt(jsonObject.getString("favorite_count"));
+            }
+            User user = User.findOrCreateFromJSON(jsonObject.getJSONObject("user"));
             tweet.user = user;
             user.save();
+            Entity entity = Entity.fromJSON(jsonObject.getJSONObject("entities"));
+            tweet.entity = entity;
+            entity.save();
             tweet.relativeDate = getRelativeTimeAgo(jsonObject.getString("created_at"));
             tweet.save();
 
@@ -104,12 +125,15 @@ public class Tweet extends Model{
         String relativeDate = "";
         try {
             long dateMillis = sf.parse(rawJsonDate).getTime();
-            relativeDate = DateUtils.getRelativeTimeSpanString(dateMillis,
-                    System.currentTimeMillis(), DateUtils.MINUTE_IN_MILLIS).toString();
+            relativeDate = Utils.getTimeString(dateMillis);
         } catch (ParseException e) {
             e.printStackTrace();
         }
 
         return relativeDate;
+    }
+
+    public Entity getEntity() {
+        return entity;
     }
 }

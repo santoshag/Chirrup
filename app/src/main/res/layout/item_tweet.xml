@@ -5,8 +5,8 @@
     android:padding="10dp">
 
     <ImageView
-        android:layout_width="48dp"
-        android:layout_height="48dp"
+        android:layout_width="54dp"
+        android:layout_height="54dp"
         android:id="@+id/ivProfileImg"
         android:layout_alignParentTop="true"
         android:layout_alignParentLeft="true"
@@ -43,6 +43,8 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         tools:text="1d"
+        android:textColor="#AAB8C2"
+        fontPath="fonts/roboto_light.ttf"
         android:id="@+id/tvRelativeTime"
         android:layout_alignParentTop="true"
         android:layout_alignParentRight="true"
@@ -59,4 +61,58 @@
         android:layout_toRightOf="@+id/tvUserName"
         android:layout_toEndOf="@+id/tvUserName"
         android:paddingLeft="5dp"/>
+
+    <ImageView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:id="@+id/ivPhoto"
+        android:paddingTop="5dp"
+        android:layout_below="@+id/tvBody"
+        android:layout_toRightOf="@+id/ivProfileImg"
+        tools:src="@drawable/twitter_icon"/>
+
+<LinearLayout
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:weightSum="1"
+    android:orientation="horizontal"
+    android:id="@+id/llTweetHelpers"
+    android:layout_below="@+id/ivPhoto"
+    android:paddingTop="10dp"
+    android:paddingBottom="-5dp"
+    android:layout_alignParentBottom="true"
+    android:layout_toRightOf="@+id/ivProfileImg">
+    <ImageView
+        android:layout_width="18dp"
+        android:layout_height="18dp"
+        android:id="@+id/ivReply"
+        android:layout_gravity="left"
+        android:src="@drawable/reply"
+        android:layout_weight=".33"/>
+    <ImageView
+        android:layout_width="18dp"
+        android:layout_height="18dp"
+        android:id="@+id/ivRetweet"
+        android:src="@drawable/retweet_off"
+        android:layout_weight=".12"/>
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text=""
+        android:id="@+id/tvRetweetCount"
+        android:layout_weight=".21"/>
+    <ImageView
+        android:layout_width="18dp"
+        android:layout_height="18dp"
+        android:id="@+id/ivLike"
+        android:layout_weight=".12"
+        android:src="@drawable/like_off"/>
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text=""
+        android:id="@+id/tvLikeCount"
+        android:layout_weight=".21"/>
+</LinearLayout>
+
 </RelativeLayout>
