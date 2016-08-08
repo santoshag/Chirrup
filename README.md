@@ -44,7 +44,8 @@ The following **bonus** features are implemented:
 
 The following **additional** features are implemented:
 
-* [x] List anything else that you can get done to improve the app functionality!
+* [x] Custom fonts
+* [x] ActiveAndroid ORM for sqllite db handling
 
 ## Video Walkthrough
 
@@ -52,14 +53,11 @@ Here's a walkthrough of implemented user stories:
 
 [Watch demo on Youtube](https://youtu.be/KPGQrp3hVyo).
 
-## Notes
-
-Describe any challenges encountered while building the app.
-
 ## Open-source libraries used
 
 - [Android Async HTTP](https://github.com/loopj/android-async-http) - Simple asynchronous HTTP requests with JSON parsing
-- [Picasso](http://square.github.io/picasso/) - Image loading and caching library for Android
+- [Glide](https://github.com/bumptech/glide) - Image loading and caching library for Android
+- [ActiveAndroid] (http://www.activeandroid.com/) - ActiveAndroid is an active record style ORM (object relational mapper) for android sqllite.
 
 ## License
 
