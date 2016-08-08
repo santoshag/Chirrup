@@ -38,41 +38,52 @@ import org.json.JSONObject;
 import java.util.ArrayList;
 import java.util.List;
 
+import butterknife.BindView;
+import butterknife.ButterKnife;
 import cz.msebera.android.httpclient.Header;
 import jp.wasabeef.glide.transformations.RoundedCornersTransformation;
 import uk.co.chrisjenx.calligraphy.CalligraphyContextWrapper;
 
 public class TimelineActivity extends AppCompatActivity {
+
+    // Automatically finds each field by the specified ID.
+    @BindView(R.id.ivProfilePhoto)
+    ImageView ivProfilePhoto;
+    @BindView(R.id.ivAirplaneMode)
+    ImageView ivAirplaneMode;
+    @BindView(R.id.swipeContainer)
+    SwipeRefreshLayout swipeContainer;
+    @BindView(R.id.rvTweets)
+    RecyclerView rvTweets;
+    @BindView(R.id.toolbar)
+    Toolbar toolbar;
+    @BindView(R.id.fabCompose)
+    FloatingActionButton fabCompose;
+
+
     private TwitterClient client;
     private TweetsAdapter tweetsAdapter;
-    private RecyclerView rvTweets;
     private ArrayList<Tweet> tweetList;
-    FloatingActionButton myFab;
-    private SwipeRefreshLayout swipeContainer;
-    private ImageView ivProfilePhoto, ivAirplaneMode;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_timeline);
+        ButterKnife.bind(this);
 
-        // Find the toolbar view inside the activity layout
-        Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
-        // Sets the Toolbar to act as the ActionBar for this Activity window.
         // Make sure the toolbar exists in the activity and is not null
         setSupportActionBar(toolbar);
         getSupportActionBar().setDisplayShowTitleEnabled(false);
 
         //get singleton rest client
         client = TwitterApplication.getRestClient();
-// Lookup the swipe container view
-        swipeContainer = (SwipeRefreshLayout) findViewById(R.id.swipeContainer);
         setupProfileImage();
+        setupTweetsAdapter();
+        setupSwipeToRefreshView();
 
-        ivProfilePhoto = (ImageView) findViewById(R.id.ivProfilePhoto);
-        ivAirplaneMode = (ImageView) findViewById(R.id.ivAirplaneMode);
-        myFab = (FloatingActionButton) findViewById(R.id.fabCompose);
-        rvTweets = (RecyclerView) findViewById(R.id.rvTweets);
+    }
+
+    private void setupTweetsAdapter() {
         tweetList = new ArrayList<>();
         tweetsAdapter = new TweetsAdapter(this, tweetList);
         rvTweets.setAdapter(tweetsAdapter);
@@ -87,7 +98,6 @@ public class TimelineActivity extends AppCompatActivity {
                     public void onItemClicked(RecyclerView recyclerView, int position, View v) {
                         Tweet tweet = tweetList.get(position);
                         Intent intent = new Intent(TimelineActivity.this, DetailActivity.class);
-                        //intent.putExtra("article", Parcels.wrap(article));
                         startActivity(intent);
                     }
                 }
@@ -104,15 +114,16 @@ public class TimelineActivity extends AppCompatActivity {
                 // Triggered only when new data needs to be appended to the list
                 // Add whatever code is needed to append new items to the bottom of the list
                 //limit totalItemsCount to void "Rate limit exceeded" error
-                if(totalItemsCount < 60) {
+                if (totalItemsCount < 60) {
                     populateMoreTimeline();
                 }
             }
         });
+
     }
 
     private void setupProfileImage() {
-        client.getUserProfile(new JsonHttpResponseHandler(){
+        client.getUserProfile(new JsonHttpResponseHandler() {
             @Override
             public void onSuccess(int statusCode, Header[] headers, JSONObject response) {
                 try {
@@ -138,10 +149,9 @@ public class TimelineActivity extends AppCompatActivity {
     @Override
     public void onResume() {
         super.onResume();
-        if(!Utils.checkForInternet()){
-            Toast.makeText(this, "Internet is not connected", Toast.LENGTH_SHORT).show();
-// Query ActiveAndroid for list of todo items currenty sorted by priority
-
+        if (!Utils.checkForInternet()) {
+            Toast.makeText(this, "Not connected to network. Using offline tweets.", Toast.LENGTH_SHORT).show();
+            fabCompose.setVisibility(View.INVISIBLE);
             swipeContainer.setEnabled(false);
             List<Tweet> queryResults = new Select().from(Tweet.class)
                     .orderBy("remote_id DESC").execute();
@@ -152,14 +162,16 @@ public class TimelineActivity extends AppCompatActivity {
             tweetList.addAll(queryResults);
             tweetsAdapter.notifyDataSetChanged();
 
-        }else{
+        } else {
+            fabCompose.setVisibility(View.VISIBLE);
             ivAirplaneMode.setVisibility(View.GONE);
             //get timeline here
-            populateTimeline("since_id", (long)1);
+            populateTimeline("since_id", (long) 1);
             //setup swipe to refresh
             setupSwipeToRefreshView();
         }
     }
+
     // pass context to Calligraphy
     @Override
     protected void attachBaseContext(Context context) {
@@ -174,7 +186,7 @@ public class TimelineActivity extends AppCompatActivity {
                 // Your code to refresh the list here.
                 // Make sure you call swipeContainer.setRefreshing(false)
                 // once the network request has completed successfully.
-                populateTimeline("since_id", (long)1);
+                populateTimeline("since_id", (long) 1);
             }
         });
         // Configure the refreshing colors
@@ -184,30 +196,30 @@ public class TimelineActivity extends AppCompatActivity {
                 android.R.color.holo_red_light);
     }
 
-    public void composeNewTweet(View view){
+    public void composeNewTweet(View view) {
         NewTweetFragment myDialog = new NewTweetFragment();
 
         FragmentManager fm = getSupportFragmentManager();
-        myDialog.show(fm, "test");
+        myDialog.show(fm, "new tweet");
 
     }
 
 
-    private void populateMoreTimeline(){
-        if(Tweet.lastTweetId != null) {
+    private void populateMoreTimeline() {
+        if (Tweet.lastTweetId != null) {
             populateTimeline("max_id", Tweet.lastTweetId);
         }
     }
 
     //send API request to get tweets and add it to listview
-    private void populateTimeline(final String sinceOrMaxId, long count){
+    private void populateTimeline(final String sinceOrMaxId, long count) {
 
-        client.getHomeTimeline(new JsonHttpResponseHandler(){
+        client.getHomeTimeline(new JsonHttpResponseHandler() {
             @Override
             public void onSuccess(int statusCode, Header[] headers, JSONArray response) {
                 Log.d("DEBUG", response.toString());
                 Boolean clearOfflineTweets = Boolean.FALSE;
-                if(sinceOrMaxId.equals("since_id")){
+                if (sinceOrMaxId.equals("since_id")) {
                     tweetList.clear();
                     new Delete().from(Tweet.class).execute(); // all records
                     new Delete().from(User.class).execute(); // all records
@@ -225,6 +237,6 @@ public class TimelineActivity extends AppCompatActivity {
             }
         }, sinceOrMaxId, count);
     }
-    
+
 
 }

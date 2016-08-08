@@ -1,5 +1,6 @@
 package com.codepath.apps.chirrup.fragments;
 
+import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.design.widget.BottomSheetDialogFragment;
@@ -16,26 +17,36 @@ import android.widget.TextView;
 import com.codepath.apps.chirrup.R;
 import com.codepath.apps.chirrup.TwitterApplication;
 import com.codepath.apps.chirrup.TwitterClient;
+import com.codepath.apps.chirrup.activities.TimelineActivity;
 import com.loopj.android.http.JsonHttpResponseHandler;
 
 import org.json.JSONObject;
 
+import butterknife.BindView;
+import butterknife.ButterKnife;
+import butterknife.Unbinder;
 import cz.msebera.android.httpclient.Header;
 
 /**
  * Created by santoshag on 7/31/16.
  */
-public class NewTweetFragment extends BottomSheetDialogFragment{
+public class NewTweetFragment extends BottomSheetDialogFragment {
+
+
+    @BindView(R.id.etTweetText) EditText etTweetText;
+    @BindView(R.id.btnPost) Button btnPostTweet;
+    @BindView(R.id.tvCharCount) TextView tvCharCount;
+
+    private Unbinder unbinder;
 
     TwitterClient client;
-    EditText etTweetText;
-    Button btnPostTweet;
     //    TextView tvCharCount;
     public static int TWEET_CHAR_LIMIT = 140;
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.fragment_new_tweet, container);
+        unbinder = ButterKnife.bind(this, view);
         return view;
     }
 
@@ -45,9 +56,6 @@ public class NewTweetFragment extends BottomSheetDialogFragment{
 
         //get singleton rest client
         client = TwitterApplication.getRestClient();
-        etTweetText = (EditText) view.findViewById(R.id.etTweetText);
-        btnPostTweet = (Button) view.findViewById(R.id.btnPost);
-
         btnPostTweet.setOnClickListener(new View.OnClickListener() {
 
             @Override
@@ -57,13 +65,12 @@ public class NewTweetFragment extends BottomSheetDialogFragment{
                     @Override
                     public void onSuccess(int statusCode, Header[] headers, JSONObject response) {
                         Log.d("DEBUG", "onsuccess" + response.toString());
-
-                        dismiss();
+                        Intent intent = new Intent(getActivity(), TimelineActivity.class);
+                        startActivity(intent);
                     }
 
                     @Override
                     public void onFailure(int statusCode, Header[] headers, String responseString, Throwable throwable) {
-
                         dismiss();
                     }
                 }, etTweetText.getText().toString());
@@ -81,7 +88,6 @@ public class NewTweetFragment extends BottomSheetDialogFragment{
             @Override
             public void onTextChanged(CharSequence s, int start, int before, int count) {
                 //This sets a textview to the current length
-                TextView tvCharCount = (TextView) view.findViewById(R.id.tvCharCount);
                 tvCharCount.setText(String.valueOf(TWEET_CHAR_LIMIT - s.length()));
                 if(s.length() > 0 && s.length() <= TWEET_CHAR_LIMIT){
                     btnPostTweet.setEnabled(true);
@@ -99,4 +105,11 @@ public class NewTweetFragment extends BottomSheetDialogFragment{
         });
 
     }
+
+    @Override public void onDestroyView() {
+        super.onDestroyView();
+        unbinder.unbind();
+    }
+
+
 }

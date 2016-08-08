@@ -20,7 +20,7 @@ import jp.wasabeef.glide.transformations.RoundedCornersTransformation;
 /**
  * Created by santoshag on 8/5/16.
  */
-public class TweetsAdapter extends RecyclerView.Adapter<TweetsAdapter.ViewHolder>{
+public class TweetsAdapter extends RecyclerView.Adapter<TweetsAdapter.ViewHolder> {
 
     // Store a member variable for the contacts
     private List<Tweet> mTweets;
@@ -68,7 +68,6 @@ public class TweetsAdapter extends RecyclerView.Adapter<TweetsAdapter.ViewHolder
         ImageView ivRetweet = viewHolder.ivRetweet;
         ImageView ivLike = viewHolder.ivLike;
 
-
         TextView tvRetweetCount = viewHolder.tvRetweetCount;
         TextView tvLikeCount = viewHolder.tvLikeCount;
 
@@ -78,12 +77,12 @@ public class TweetsAdapter extends RecyclerView.Adapter<TweetsAdapter.ViewHolder
         tvRetweetCount.setText("");
         tvLikeCount.setText("");
 
-        if(tweet.getRetweetCount() > 0) {
+        if (tweet.getRetweetCount() > 0) {
             ivRetweet.setImageResource(0);
             tvRetweetCount.setText(String.valueOf(tweet.getRetweetCount()));
             ivRetweet.setImageDrawable(getContext().getResources().getDrawable(R.drawable.retweet_on));
         }
-        if(tweet.getFavouritesCount() > 0) {
+        if (tweet.getFavouritesCount() > 0) {
             ivLike.setImageResource(0);
             tvLikeCount.setText(String.valueOf(tweet.getFavouritesCount()));
             ivLike.setImageDrawable(getContext().getResources().getDrawable(R.drawable.like_on));
@@ -123,16 +122,12 @@ public class TweetsAdapter extends RecyclerView.Adapter<TweetsAdapter.ViewHolder
             tvScreenName = (TextView) itemView.findViewById(R.id.tvScreenName);
             tvLikeCount = (TextView) itemView.findViewById(R.id.tvLikeCount);
             tvRetweetCount = (TextView) itemView.findViewById(R.id.tvRetweetCount);
-
             tvBody = (LinkifiedTextView) itemView.findViewById(R.id.tvBody);
-
             tvRelativeTime = (TextView) itemView.findViewById(R.id.tvRelativeTime);
             ivProfileImg = (ImageView) itemView.findViewById(R.id.ivProfileImg);
             ivPhoto = (ImageView) itemView.findViewById(R.id.ivPhoto);
             ivRetweet = (ImageView) itemView.findViewById(R.id.ivRetweet);
-
             ivLike = (ImageView) itemView.findViewById(R.id.ivLike);
-
         }
     }
 
